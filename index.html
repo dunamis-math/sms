@@ -30,12 +30,12 @@
 <script>
   // 번호와 내용은 주소의 # 뒤에서만 읽어요. # 뒤 내용은 서버로 전송되지 않아요.
   var p = new URLSearchParams(location.hash.slice(1));
-  var to = (p.get('to') || '').replace(/[^0-9]/g, '');
+  var to = (p.get('to') || '').replace(/[^0-9*]/g, '');
   var body = p.get('body') || '';
   var who = p.get('who') || '';
   var app = document.getElementById('app');
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-  function fmt(d){return d.length===11?d.replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3'):d}
+  function fmt(d){var m=d.match(/^(\*\d*?)?(01\d{8,9})$/);if(!m)return d;var n=m[2].length===11?m[2].replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3'):m[2];return (m[1]?m[1]+' ':'')+n}
   function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){t.classList.remove('on')},2200)}
   function copy(text,label){
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){toast(label+' 복사했어요')},function(){toast('길게 눌러 복사해 주세요')})}
